@@ -16,10 +16,14 @@ module Hunch
 			tls_pass:	nil		
 		}.freeze
 
+		MANDATORY_RABBIT_OPTIONS = [:host, :port, :user, :pass]
+
 		def initialize(options = {})
-			@rabbitmq = DEFAULT_RABBITMQ.merge(options[:rabbitmq])
+			@rabbitmq = DEFAULT_RABBITMQ.merge(options[:rabbitmq] || {})
 			@logger   = options[:logger] || default_logger
-			@sentry   = options[:sentry] || options[:raven]
+			@sentry   = options[:sentry] || options[:raven] || false
+
+			sanitize!
 		end
 
 		def sentry?
@@ -30,6 +34,12 @@ module Hunch
 
 		def default_logger
 			::Logger.new(STDOUT)
+		end
+
+		def sanitize!
+			MANDATORY_RABBIT_OPTIONS.each do |opt|
+				raise ArgumentError, "[:rabbitmq][:#{opt}] option is missing" unless @rabbitmq[opt]
+			end
 		end
 	end
 end
