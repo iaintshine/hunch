@@ -1,8 +1,16 @@
 module Hunch
 	class Configuration
+		HOST_UNKNOWN   = '<host-unknown>'.freeze
+		APP_UNDEFINED  = '<app-undefined>'.freeze
+
 		attr_accessor :rabbitmq
 		attr_accessor :logger
 		attr_accessor :sentry
+		attr_accessor :host
+		attr_accessor :app_id
+		attr_accessor :request_id
+
+		alias :app=, :app_id=
 
 		DEFAULT_RABBITMQ = { 
 			host: 		'localhost',
@@ -22,6 +30,9 @@ module Hunch
 			@rabbitmq = DEFAULT_RABBITMQ.merge(options[:rabbitmq] || {})
 			@logger   = options[:logger] || default_logger
 			@sentry   = options[:sentry] || options[:raven] || false
+			@host     = options[:host]	 || query_host
+			@app_id   = options[:app_id] || options[:app] || query_app
+			@request_id = options[:request_id] || -> { Thread.current[:request_id] }
 
 			sanitize!
 		end
@@ -30,10 +41,26 @@ module Hunch
 			@sentry
 		end
 
+		def host_known?
+			@host != HOST_UNKNOWN
+		end
+
+		def app_known?
+			@app_id != APP_UNDEFINED
+		end
+
 	private
 
 		def default_logger
 			::Logger.new(STDOUT)
+		end
+
+		def query_host
+			`hostname -s`.chomp || HOST_UNKNOWN
+		end
+
+		def query_app
+			APP_UNDEFINED
 		end
 
 		def sanitize!
