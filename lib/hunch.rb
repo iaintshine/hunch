@@ -2,7 +2,7 @@ require "hunch/version"
 require "hunch/configuration"
 
 module Hunch
-	extend << self
+	extend self
 
 	def configure
 		yield configuration
