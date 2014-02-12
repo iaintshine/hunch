@@ -7,10 +7,12 @@ Gem::Specification.new do |spec|
   spec.name          = "hunch"
   spec.version       = Hunch::VERSION
   spec.authors       = ["iaintshine"]
-  spec.email         = ["bodziomista@gmail.com"]
-  spec.description   = %q{TODO: Write a gem description}
-  spec.summary       = %q{TODO: Write a gem summary}
-  spec.homepage      = ""
+  spec.email         = ["boguslaw.mista@realitypump.com"]
+  spec.description   = %q{rabbitmq client used for inter service communication}
+  spec.summary       = %q{Hunch is a rabbitmq client used for inter service communication insides
+                          topware's platform. Its a broker/producer only gem. For a consumer use 
+                          original hutch library.}
+  spec.homepage      = "http://realitypump.com"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
@@ -18,6 +20,11 @@ Gem::Specification.new do |spec|
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
 
+  spec.add_runtime_dependency "bunny", "~> 1.1.0"
+  spec.add_runtime_dependency "multi_json", "~> 1.0"
+  spec.add_runtime_dependency "sentry-raven", "~> 0.7.1"
+  spec.add_development_dependency "rspec", "~> 2.14.1"
+  spec.add_development_dependency "simplecov", "~> 0.7.1"
   spec.add_development_dependency "bundler", "~> 1.3"
   spec.add_development_dependency "rake"
 end
