@@ -1,5 +1,6 @@
 require "hunch/version"
 require "hunch/configuration"
+require "hunch/broker"
 
 module Hunch
 	extend self
@@ -13,7 +14,14 @@ module Hunch
 	end
 
 	alias_method :config, :configuration
+
+	def broker
+		@broker ||= Broker.new configuration
+	end
+
+	def publish!(routing_key, message, attributes = {})
+		broker.publish routing_key, message, attributes
+	end
 end
 
 require "hunch/cli"
-require ""

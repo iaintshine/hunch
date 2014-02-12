@@ -1,6 +1,8 @@
 require "multi_json"
 require "bunny"
 require "securerandom"
+require "hunch/configuration"
+require "hunch/errors"
 
 module Hunch
 	class Broker
@@ -23,21 +25,6 @@ module Hunch
 
 		def publish(routing_key, message, properties = {})
 			payload = JSON.dump message
-
-			non_overridable_properties = {
-				persistent: 	true,
-				routing_key: 	routing_key,
-				timestamp: 		Time.now.to_i,
-				content_type: 	"application/json",
-				type: 			"kinda.bus",
-				message_id: 	generate_message_id,
-				app_id: 		config.app_id,
-				headers: {
-					request_id: config.request_id,
-					hostname: 	config.host,
-					pid: 		Process.pid 
-				}
-			}
 
 			attributes = properties.merge(non_overridable_properties)
 
@@ -68,6 +55,23 @@ module Hunch
 									threaded: false
 			
 			@connection.start
+		end
+
+		def non_overridable_properties
+			{
+				persistent: 	true,
+				routing_key: 	routing_key,
+				timestamp: 		Time.now.to_i,
+				content_type: 	"application/json",
+				type: 			"kinda.bus",
+				message_id: 	generate_message_id,
+				app_id: 		config.app_id,
+				headers: {
+					request_id: config.request_id,
+					hostname: 	config.host,
+					pid: 		Process.pid 
+				}
+			}
 		end
 
 		def generate_message_id
