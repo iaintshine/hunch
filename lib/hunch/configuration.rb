@@ -8,6 +8,7 @@ module Hunch
 		attr_accessor :rabbitmq
 		attr_accessor :logger
 		attr_accessor :sentry
+		attr_accessor :statsd
 		attr_accessor :host
 		attr_accessor :app_id
 		attr_accessor :request_id
