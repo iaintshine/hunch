@@ -14,8 +14,6 @@ module Hunch
 		attr_accessor :app_id
 		attr_accessor :request_id
 
-		alias :app=, :app_id=
-
 		DEFAULT_RABBITMQ = { 
 			host: 		'localhost',
 			port: 		5672,
@@ -72,6 +70,10 @@ module Hunch
 			MANDATORY_RABBIT_OPTIONS.each do |opt|
 				raise ArgumentError, "[:rabbitmq][:#{opt}] option is missing" unless @rabbitmq[opt]
 			end
+
+			raise ArgumentError, "logger option should be an instance of SemanticLogger::Logger" unless @logger.kind_of?(SemanticLogger::Logger)
+			raise ArgumentError, "statsd option should be an instance of Statsd" unless @statsd.is_a?(Statsd) || @statsd.is_a?(NullStatsd)
+			raise ArgumentError, "request_id option should be a proc" unless @request_id.respond_to?(:call) 
 		end
 	end
 end

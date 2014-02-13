@@ -1,3 +1,5 @@
+require "statsd"
+
 module Hunch
 	class NullStatsd
 		def increment(stat, sample_rate=1); 	end

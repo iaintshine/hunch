@@ -6,12 +6,9 @@ require "thread_safe"
 
 require "hunch/configuration"
 require "hunch/errors"
-require "hunch/raven"
 
 module Hunch
 	class Broker
-		include Logging
-
 		attr_reader :connection, :config, :channels, :exchanges
 
 		def initialize(config)
@@ -55,22 +52,8 @@ module Hunch
 
 			statsd.batch do |batch|
 				batch.increment "hunch.publish"
-				batch.time "hunch.exchange_publish" { exchange.publish payload, attributes }
+				batch.time("hunch.exchange_publish") { exchange.publish payload, attributes }
 			end
-		end
-
-		def channel
-			unless Thread.current[:channel]
-				Thread.current[:channel] = create_channel!
-			end
-			Thread.current[:channel]
-		end
-
-		def exchange
-			unless Thread.current[:exchange]
-				Thread.current[:exchange] = create_exchange!
-			end
-			Thread.current[:exchange]
 		end
 
 	private
@@ -178,13 +161,27 @@ module Hunch
 			channels.clear
 		end
 
+		def channel
+			unless Thread.current[:channel]
+				Thread.current[:channel] = create_channel!
+			end
+			Thread.current[:channel]
+		end
+
+		def exchange
+			unless Thread.current[:exchange]
+				Thread.current[:exchange] = create_exchange!
+			end
+			Thread.current[:exchange]
+		end
+
 		def connection_properties
 			{
 				host: 						config.rabbitmq[:host],
-				port: 						config.rabbitmq[:port]
+				port: 						config.rabbitmq[:port],
 				username: 					config.rabbitmq[:username],
 				password: 					config.rabbitmq[:pass],
-				vhost: 						config.rabbitmq[:vhost]
+				vhost: 						config.rabbitmq[:vhost],
 				threaded: 					false,
 				automatically_recover: 		true,
 				network_recovery_interval: 	1,
