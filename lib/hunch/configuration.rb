@@ -1,3 +1,5 @@
+require "semantic_logger"
+
 module Hunch
 	class Configuration
 		HOST_UNKNOWN   = '<host-unknown>'.freeze
@@ -52,7 +54,7 @@ module Hunch
 	private
 
 		def default_logger
-			::Logger.new(STDOUT)
+			SemanticLogger[Hunch]
 		end
 
 		def query_host

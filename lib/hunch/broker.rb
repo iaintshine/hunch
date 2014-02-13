@@ -1,4 +1,4 @@
-require "semantic_logger"
+require "raven"
 require "multi_json"
 require "bunny"
 require "securerandom"
@@ -6,9 +6,12 @@ require "thread_safe"
 
 require "hunch/configuration"
 require "hunch/errors"
+require "hunch/raven"
 
 module Hunch
 	class Broker
+		include Logging
+
 		attr_reader :connection, :config, :channels, :exchanges
 
 		def initialize(config)
@@ -72,6 +75,11 @@ module Hunch
 			@config.logger
 		end 
 
+		def capture_exception(error_message, e)
+			logger.error(error_message, e)
+			Raven.capture_exception(e) if config.sentry?
+		end
+
 		def protocol
 			config.rabbitmq[:tls] ? :amqps : :amqp
 		end
@@ -94,11 +102,11 @@ module Hunch
 			yield if block_given?
 		rescue Bunny::TCPConnectionFailed => e
 			error_message = "could not connect to #{uri}"
-			logger.error(error_message, e)
+			capture_exception(error_message, e)
 			raise ConnectionError.new error_message
 		rescue Bunny::PossibleAuthenticationFailureError => e
 			error_message = "authentication failed for user #{config.rabbitmq[:user]}"
-			logger.error(error_message, e)
+			capture_exception(error_message, e)
 			raise ConnectionErorr.new error_message
 		end
 
@@ -108,7 +116,7 @@ module Hunch
 			error_message = "RabbitMQ responded with 406 Precondition Failed when creating this #{type}. " +
           					"Perhaps it is being redeclared with non-matching attributes. " + 
           					"Code: #{e.channel_close.reply_code}, message: #{e.channel_close.reply_text}"
-			logger.error(error_message, e)
+			capture_exception(error_message, e)
 			raise ChannelError.new(error_message)
 		end
 
@@ -154,7 +162,7 @@ module Hunch
 			 	rescue Bunny::NotFound => e
 			 		error_message = "Failed to close a channel. " + 
 			 						"Code: #{e.channel_close.reply_code}, message: #{e.channel_close.reply_text}"
-			 		logger.error error_message, e
+			 		capture_exception error_message, e
 			 		raise ChannelError.new error_message
 			 	end 
 			end
