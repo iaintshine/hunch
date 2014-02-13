@@ -7,5 +7,6 @@ module Hunch
 		def set(stat, value, sample_rate=1); 	end
 		def timing(stat, ms, sample_rate=1); 	end
 		def time(stat, sample_rate=1); yield 	end
+		def batch(&block); yield self 			end
 	end
 end

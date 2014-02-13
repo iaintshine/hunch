@@ -45,14 +45,18 @@ module Hunch
 		end
 
 		def publish(routing_key, message, properties = {})
-			ensure_connection!
 			logger.info "publishing message", routing_key: routing_key, message: message
+
+			ensure_connection!
 
 			payload = MultiJson.dump message
 
 			attributes = properties.merge(non_overridable_properties)
 
-			exchange.publish payload, attributes
+			statsd.batch do |batch|
+				batch.increment "hunch.publish"
+				batch.time "hunch.exchange_publish" { exchange.publish payload, attributes }
+			end
 		end
 
 		def channel
@@ -75,9 +79,14 @@ module Hunch
 			@config.logger
 		end 
 
+		def statsd
+			@config.statsd
+		end
+
 		def capture_exception(error_message, e)
 			logger.error(error_message, e)
 			Raven.capture_exception(e) if config.sentry?
+			statsd.increment "hunch.exception"
 		end
 
 		def protocol
