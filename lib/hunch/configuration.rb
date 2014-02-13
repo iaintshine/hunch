@@ -1,4 +1,5 @@
 require "semantic_logger"
+require "hunch/null_statsd"
 
 module Hunch
 	class Configuration
@@ -33,6 +34,7 @@ module Hunch
 			@rabbitmq = DEFAULT_RABBITMQ.merge(options[:rabbitmq] || {})
 			@logger   = options[:logger] || default_logger
 			@sentry   = options[:sentry] || options[:raven] || false
+			@statsd   = options[:statsd] || NullStatsd.new
 			@host     = options[:host]	 || query_host
 			@app_id   = options[:app_id] || options[:app] || query_app
 			@request_id = options[:request_id] || -> { Thread.current[:request_id] }

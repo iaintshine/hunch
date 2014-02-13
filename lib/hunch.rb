@@ -22,6 +22,6 @@ module Hunch
 	def publish!(routing_key, message, attributes = {})
 		broker.publish routing_key, message, attributes
 	end
-end
 
-require "hunch/cli"
+	autoload :Cli, "hunch/cli"
+end
