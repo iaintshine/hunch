@@ -1,24 +1,29 @@
 # Hunch
 
-TODO: Write a gem description
+Hunch is a rabbitmq client used for inter service communication inside our topware 
+gaming platform. It is a broker/producer only gem. For a consumer please use hutch gem.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem 'hunch'
+    gem "hunch", git: "http://192.168.100.16/servers/hunch.git"
 
 And then execute:
 
     $ bundle
 
-Or install it yourself as:
-
-    $ gem install hunch
-
 ## Usage
 
-TODO: Write usage instructions here
+```ruby
+Hunch.configure do |c|
+	c.logger = SemanticLogger[Hunch]
+	# other custom initialization
+end
+
+Hunch.publish! "uaa.user_created", id: 1, username: "foobar", email: "foo@bar.com"
+
+```
 
 ## Contributing
 
