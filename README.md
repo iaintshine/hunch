@@ -23,7 +23,29 @@ end
 
 Hunch.publish! "uaa.user_created", id: 1, username: "foobar", email: "foo@bar.com"
 
+# communication with post office service
+Hunch.publish! "email.welcome", template_id: "welcome", to: "boguslaw.mista@realitypump.com",
+				 data: { name: "iaintshine" }
 ```
+
+## CLI
+
+One can use debug console for testing. 
+
+1. Copy the `.hunch.example` to `.hunch`, fill all the missing parts.
+2. Call `bin/hunch console` to start up console with configured environment. 
+3. Now to publish a message just call the `Hunch::publish!` method with routing key 
+and message set as usage section shows.
+
+## CLI commands
+
+* `hunch console` - start a console with hunch environment configured. `.hunch` rc file is used for configuration if found. 
+* `hunch publish` - publish a message to the rabbitmq. `.hunch` rc file is used for configuration if found. Options:
+	* `-k`, *required*, string, routing key, eg. `-k=uaa.user_created`
+	* `-m`, *required*, hash, message hash, eg. `-m=username:foobar`  
+	* `-p`, *optional*, hash, additional exchange properties
+
+For more info `bin/hunch help` or `bin/hunch help [COMMAND]`
 
 ## Contributing
 
