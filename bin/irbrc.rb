@@ -1,7 +1,5 @@
-#!/usr/bin/env ruby
-
 $: << File.expand_path("../../lib", __FILE__)
 
 require "hunch"
 
-Hunch::CLI.start(ARGV)
+Hunch.configuration.load_from_file ".hunch"

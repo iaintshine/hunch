@@ -1,0 +1,9 @@
+host: localhost
+port: 5672
+user: guest
+pass: guest
+exchange: hutch 
+vhost: /
+tls: false
+tls_cert: nil
+tls_pass: nil

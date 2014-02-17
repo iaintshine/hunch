@@ -1,5 +1,6 @@
 require "semantic_logger"
 require "hunch/null_statsd"
+require "yaml"
 
 module Hunch
 	class Configuration
@@ -50,6 +51,16 @@ module Hunch
 
 		def app_known?
 			@app_id != APP_UNDEFINED
+		end
+
+		def load_from_file(filename)
+			root = File.expand_path('../../../', __FILE__)		
+			hunchrc = File.join(root, filename)
+
+			return logger.warn "#{filename} not found" unless File.exist? hunchrc
+			config = YAML::load_file hunchrc	
+
+			config.each { |k, v| @rabbitmq[k.to_sym] = v }
 		end
 
 	private

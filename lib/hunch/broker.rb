@@ -48,7 +48,10 @@ module Hunch
 
 			payload = MultiJson.dump message
 
-			attributes = properties.merge(non_overridable_properties)
+			attributes = properties.merge(non_overridable_properties(routing_key))
+
+			logger.info "attributes: ", attributes
+			logger.info "payload: ", payload
 
 			statsd.batch do |batch|
 				batch.increment "hunch.publish"
@@ -84,7 +87,7 @@ module Hunch
 			"%s://%s:%s@%s:%d/%s" % [protocol,
 									config.rabbitmq[:user],
 									config.rabbitmq[:pass],
-									config.rabbtimq[:host],
+									config.rabbitmq[:host],
 									config.rabbitmq[:port],
 									config.rabbitmq[:vhost]
 									]
@@ -128,19 +131,19 @@ module Hunch
 
 
 		def create_channel!
-			with_resource_handler! { 
+			with_resource_handler! :channel do 
 				ch = connection.create_channel  
 				channels << ch
 				ch
-			} 
+			end
 		end
 
 		def create_exchange!
-			with_resource_handler! { 
+			with_resource_handler! :exchange do
 				exchg = channel.topic config.rabbitmq[:exchange], durable: true 
 				exchanges << exchg
 				exchg
-			}
+			end
 		end
 
 		def close_exchanges!
@@ -189,7 +192,7 @@ module Hunch
 			}
 		end
 
-		def non_overridable_properties
+		def non_overridable_properties(routing_key)
 			{
 				persistent: 	true,
 				routing_key: 	routing_key,
@@ -199,7 +202,7 @@ module Hunch
 				message_id: 	generate_message_id,
 				app_id: 		config.app_id,
 				headers: {
-					request_id: config.request_id,
+					request_id: config.request_id.call,
 					hostname: 	config.host,
 					pid: 		Process.pid 
 				}

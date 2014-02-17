@@ -23,5 +23,5 @@ module Hunch
 		broker.publish routing_key, message, attributes
 	end
 
-	autoload :Cli, "hunch/cli"
+	autoload :CLI, "hunch/cli"
 end
