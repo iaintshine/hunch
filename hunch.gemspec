@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency "thread_safe", "~> 0.1.3"
   spec.add_runtime_dependency "semantic_logger", "~> 2.6.1"
   spec.add_runtime_dependency "sentry-raven", "~> 0.7.1"
-  spec.add_runtime_dependency "statsd-ruby", "~> 0.3.0"
+  spec.add_runtime_dependency "statsd-ruby", "~> 1.2.1"
   spec.add_runtime_dependency "thor", "~> 0.18.1"
   spec.add_development_dependency "rspec", "~> 2.14.1"
   spec.add_development_dependency "simplecov", "~> 0.7.1"
