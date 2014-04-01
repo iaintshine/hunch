@@ -1,17 +1,17 @@
 require "hunch"
 
-describe Hunch do 
+describe Hunch do
 
-	describe ".configure" do 
-	end
+    describe ".configure" do
+    end
 
-	describe ".configuration" do 
-	end
+    describe ".configuration" do
+    end
 
-	describe ".broker" do 
-	end
+    describe ".broker" do
+    end
 
-	describe ".publish!" do 
-	end
+    describe ".publish!" do
+    end
 
 end

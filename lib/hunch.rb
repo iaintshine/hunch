@@ -3,25 +3,25 @@ require "hunch/configuration"
 require "hunch/broker"
 
 module Hunch
-	extend self
+    extend self
 
-	def configure
-		yield configuration
-	end
+    def configure
+        yield configuration
+    end
 
-	def configuration
-		@configuration ||= Configuration.new
-	end
+    def configuration
+        @configuration ||= Configuration.new
+    end
 
-	alias_method :config, :configuration
+    alias_method :config, :configuration
 
-	def broker
-		@broker ||= Broker.new configuration
-	end
+    def broker
+        @broker ||= Broker.new configuration
+    end
 
-	def publish!(routing_key, message, attributes = {})
-		broker.publish routing_key, message, attributes
-	end
+    def publish!(routing_key, message, attributes = {})
+        broker.publish routing_key, message, attributes
+    end
 
-	autoload :CLI, "hunch/cli"
+    autoload :CLI, "hunch/cli"
 end
