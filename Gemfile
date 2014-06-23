@@ -12,6 +12,6 @@ group :development, :darwin do
 	gem "terminal-notifier-guard"
 end
 
-group :developmen, :test do
+group :development, :test do
 	gem "fuubar"
 end

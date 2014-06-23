@@ -36,7 +36,7 @@ module Hunch
             @statsd   = options[:statsd] || NullStatsd.new
             @host     = options[:host]	 || query_host
             @app_id   = options[:app_id] || options[:app] || query_app
-            @request_id = options[:request_id] || -> { Thread.current[:request_id] }
+            @request_id = options[:request_id] || -> { Thread.current[:request_id] || "<unknown>" }
 
             sanitize!
         end
