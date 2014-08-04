@@ -7,12 +7,12 @@ Gem::Specification.new do |spec|
   spec.name          = "hunch"
   spec.version       = Hunch::VERSION
   spec.authors       = ["iaintshine"]
-  spec.email         = ["bodziomista@gmail.com.com"]
+  spec.email         = ["bodziomista@gmail.com"]
   spec.description   = %q{rabbitmq client used for inter service communication}
   spec.summary       = %q{Hunch is a rabbitmq client used for inter service communication. 
                           Its a broker/producer only gem. For a consumer use 
                           original hutch library.}
-  spec.homepage      = "http://realitypump.com"
+  spec.homepage      = "https://github.com/iaintshine/hunch"
   spec.license       = "MIT"
 
   spec.files         = `git ls-files`.split($/)
