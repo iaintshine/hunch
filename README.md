@@ -1,13 +1,12 @@
 # Hunch
 
-Hunch is a rabbitmq client used for inter service communication inside our topware 
-gaming platform. It is a broker/producer only gem. For a consumer please use hutch gem.
+Hunch is a rabbitmq client used for inter service communication. It is a broker/producer only gem. For a consumer please use hutch gem.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
-    gem "hunch", git: "http://192.168.100.16/servers/hunch.git"
+    gem "hunch", :git => "https://github.com/iaintshine/hunch.git"
 
 And then execute:
 
@@ -15,17 +14,23 @@ And then execute:
 
 ## Usage
 
+### Configure 
+
 ```ruby
 Hunch.configure do |c|
-	c.logger = SemanticLogger[Hunch]
-	# other custom initialization
+	c.logger = SemanticLogger[Hunch] # optional
+	c.app    = "users_service"       # optional, deafult: "<app-undefined>" 
+    c.host   = "users-host01"        # optional default: `hostname -s`
+    c.request_id = -> { Thread.current[:request_id ] } # optional, default: "<unknown>"
+    c.sentry     = sentry_instance   # optional
+    c.statsd     = statsd_instance   # optional
 end
+```
 
-Hunch.publish! "uaa.user_created", id: 1, username: "foobar", email: "foo@bar.com"
+### Publish
 
-# communication with post office service
-Hunch.publish! "email.welcome", template_id: "welcome", to: "boguslaw.mista@realitypump.com",
-				 data: { name: "iaintshine" }
+```ruby
+Hunch.publish! "user.new", id: 1, username: "foobar", email: "foo@bar.com"
 ```
 
 ## CLI
